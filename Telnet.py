@@ -111,6 +111,14 @@ class Server:
                             client_socket.close()
                             break
 
+                        if current_response_before_break.lower() == "clear":
+                            print("Client requested clear context")
+                            self.messages.clear()
+                            send_literal_response('Context cleared!\r\n')
+                            current_response_before_break = ""
+                            send_literal_response("Ollama > ")
+                            continue
+
                         self.messages.append({"role": "user", "content": current_response_before_break})
                         response_from_ollama_json = ollama.chat(
                             model="huihui_ai/phi4-abliterated:latest",
@@ -119,6 +127,9 @@ class Server:
                         )
 
                         response_str = response_from_ollama_json['message']['content']
+                        response_str = response_str.replace('’', '\'') # replace unicode
+                        response_str = response_str.replace('–', '-')
+                        response_str = response_str.replace('—', '-')
 
                         print(f">>> {response_str}")
                         lines = response_str.splitlines()

@@ -205,3 +205,4 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print("Stopping Telnet service...")
             telnet_service.stop()
+            sys.exit(0)

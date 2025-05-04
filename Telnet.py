@@ -1,12 +1,13 @@
 import socket
+import sys
 import threading
 import textwrap
 import ollama
 from time import sleep
 
 # Set up the server address and port
-HOST = '0.0.0.0'  # Listen on all available network interfaces
-PORT = 2224          # Default Telnet port
+HOST = '0.0.0.0'
+PORT = 2224
 
 def end_of_dos_screen(message):
     off = 0
@@ -187,8 +188,20 @@ class Server:
             pass
 
 if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        HOST = sys.argv[1]
+        PORT = int(sys.argv[2])
+    elif len(sys.argv) > 2:
+        print(f"Usage: {sys.argv[0]} <HOST> <PORT>")
+        sys.exit(1)
+
     telnet_service = Server(HOST, PORT)
     telnet_service.start()
-    sleep(1)
-    while input("> ").lower() != "quit": pass
-    telnet_service.stop()
+    sleep(.5) # wait for the service to start
+    print("Press Ctrl+C to exit")
+    while True:
+        try:
+            sleep(1)
+        except KeyboardInterrupt:
+            print("Stopping Telnet service...")
+            telnet_service.stop()

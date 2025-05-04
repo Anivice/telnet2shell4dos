@@ -125,6 +125,8 @@ class Server:
                             messages=self.messages,
                             options={"keep_alive": -1}
                         )
+                        self.messages.append({"role": "assistant",
+                                              "content": response_from_ollama_json['message']['content']})
 
                         response_str = response_from_ollama_json['message']['content']
                         response_str = response_str.replace('’', '\'') # replace unicode

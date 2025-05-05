@@ -120,26 +120,26 @@ class Server:
                             send_literal_response("Ollama > ")
                             continue
 
-                        splitted_by_space = current_response_before_break.split(' ')
-                        if len(splitted_by_space) == 2 and splitted_by_space[0].lower() == "swap":
-                            response = ""
-                            print("Client requested swap model")
-                            if splitted_by_space[1].lower() == "phi":
-                                self.model = "huihui_ai/phi4-abliterated:latest"
-                                response = "Switched to model PHI4"
-                            elif splitted_by_space[1].lower() == "gemma":
-                                self.model = "huihui_ai/gemma3-abliterated:27b"
-                                response = "Switched to model GEMMA3"
-                            elif splitted_by_space[1].lower() == "llama":
-                                self.model = "llama4:latest"
-                                response = "Switched to model LLAMA4"
-                            else:
-                                response = "Model not found"
-
-                            send_literal_response(response + '\r\n')
-                            current_response_before_break = ""
-                            send_literal_response("Ollama > ")
-                            continue
+                        # splitted_by_space = current_response_before_break.split(' ')
+                        # if len(splitted_by_space) == 2 and splitted_by_space[0].lower() == "swap":
+                        #     response = ""
+                        #     print("Client requested swap model")
+                        #     if splitted_by_space[1].lower() == "phi":
+                        #         self.model = "huihui_ai/phi4-abliterated:latest"
+                        #         response = "Switched to model PHI4"
+                        #     elif splitted_by_space[1].lower() == "gemma":
+                        #         self.model = "huihui_ai/gemma3-abliterated:27b"
+                        #         response = "Switched to model GEMMA3"
+                        #     elif splitted_by_space[1].lower() == "llama":
+                        #         self.model = "llama4:latest"
+                        #         response = "Switched to model LLAMA4"
+                        #     else:
+                        #         response = "Model not found"
+                        #
+                        #     send_literal_response(response + '\r\n')
+                        #     current_response_before_break = ""
+                        #     send_literal_response("Ollama > ")
+                        #     continue
 
                         self.messages.append({"role": "user", "content": current_response_before_break})
                         response_from_ollama_json = ollama.chat(

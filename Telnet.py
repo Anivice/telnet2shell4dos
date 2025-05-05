@@ -37,6 +37,7 @@ class Server:
         self.main_loop_thread = None
         self.main_loop_thread_stop = False
         self.messages = [{"role": "assistant", "content": "You are here to answer all questions."}]
+        self.model = "huihui_ai/phi4-abliterated:latest"
 
     def __main_loop(self):
         # Create a socket object
@@ -119,9 +120,30 @@ class Server:
                             send_literal_response("Ollama > ")
                             continue
 
+                        splitted_by_space = current_response_before_break.split(' ')
+                        if len(splitted_by_space) == 2 and splitted_by_space[0].lower() == "swap":
+                            response = ""
+                            print("Client requested swap model")
+                            if splitted_by_space[1].lower() == "phi":
+                                self.model = "huihui_ai/phi4-abliterated:latest"
+                                response = "Switched to model PHI4"
+                            elif splitted_by_space[1].lower() == "gemma":
+                                self.model = "huihui_ai/gemma3-abliterated:27b"
+                                response = "Switched to model GEMMA3"
+                            elif splitted_by_space[1].lower() == "llama":
+                                self.model = "llama4:latest"
+                                response = "Switched to model LLAMA4"
+                            else:
+                                response = "Model not found"
+
+                            send_literal_response(response + '\r\n')
+                            current_response_before_break = ""
+                            send_literal_response("Ollama > ")
+                            continue
+
                         self.messages.append({"role": "user", "content": current_response_before_break})
                         response_from_ollama_json = ollama.chat(
-                            model="huihui_ai/phi4-abliterated:latest",
+                            model=self.model,
                             messages=self.messages,
                             options={"keep_alive": -1}
                         )
@@ -201,10 +223,10 @@ class Server:
             pass
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
         HOST = sys.argv[1]
         PORT = int(sys.argv[2])
-    elif len(sys.argv) > 2:
+    elif len(sys.argv) > 3:
         print(f"Usage: {sys.argv[0]} <HOST> <PORT>")
         sys.exit(1)
 
